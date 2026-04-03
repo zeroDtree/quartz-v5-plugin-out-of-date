@@ -3,7 +3,7 @@ import path from "node:path";
 import fs from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { ExampleEmitter } from "../src/emitter";
-import { createCtx, createProcessedContent } from "./helpers";
+import { assertFilePath, assertFullSlug, createCtx, createProcessedContent } from "./helpers";
 
 describe("ExampleEmitter", () => {
   it("writes a manifest to the output directory", async () => {
@@ -13,8 +13,8 @@ describe("ExampleEmitter", () => {
 
     const content = [
       createProcessedContent({
-        slug: "hello-world",
-        filePath: "notes/hello-world.md",
+        slug: assertFullSlug("hello-world"),
+        filePath: assertFilePath("notes/hello-world.md"),
         frontmatter: { title: "Hello", tags: ["docs"] },
       }),
     ];

@@ -6,7 +6,7 @@ describe("ExampleFilter", () => {
   it("filters drafts by default", () => {
     const ctx = createCtx();
     const filter = ExampleFilter();
-    const content = createProcessedContent({ frontmatter: { draft: true } });
+    const content = createProcessedContent({ frontmatter: { title: "Draft post", draft: true } });
 
     expect(filter.shouldPublish(ctx, content)).toBe(false);
   });
@@ -14,7 +14,7 @@ describe("ExampleFilter", () => {
   it("allows drafts when configured", () => {
     const ctx = createCtx();
     const filter = ExampleFilter({ allowDrafts: true });
-    const content = createProcessedContent({ frontmatter: { draft: true } });
+    const content = createProcessedContent({ frontmatter: { title: "Draft post", draft: true } });
 
     expect(filter.shouldPublish(ctx, content)).toBe(true);
   });
