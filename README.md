@@ -1,3 +1,61 @@
+
+## Quick start
+
+Show a warning callout on pages in selected folders when they have not been updated within a threshold (in days).
+
+> This plugin is a Quartz v5 port of the [`OutOfDate`](https://github.com/virgiling/virgiling.github.io/blob/v4/quartz/components/OutOfDate.tsx) component from [virgiling's Quartz v4 site](https://github.com/virgiling/virgiling.github.io).
+
+### 1. Install
+
+```bash
+npx quartz plugin add github:zeroDtree/quartz-v5-plugin-out-of-date
+```
+
+For local development, symlink from this repo instead:
+
+```bash
+npx quartz plugin add ./my-plugins/quartz-v5-plugin-out-of-date
+```
+
+### 2. Configure
+
+Add or enable the plugin in `quartz.config.yaml`. Place it **after** a date plugin (e.g. `created-modified-date`) so `dates.modified` is populated:
+
+```yaml
+plugins:
+  - source: github:quartz-community/created-modified-date
+    enabled: true
+    options:
+      defaultDateType: modified
+      priority:
+        - frontmatter
+        - git
+        - filesystem
+    order: 10
+  - source: github:zeroDtree/quartz-v5-plugin-out-of-date
+    enabled: true
+    options:
+      checkPaths:
+        - /exmaple-path-1/
+        - /exmaple-path-2/
+      staleThreshold: 60
+      # forceShow: true
+    order: 15
+    layout:
+      position: beforeBody
+      priority: 21
+```
+
+| Option           | Description                                                                                                      |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `checkPaths`     | Folder path fragments to monitor. A page matches if its path contains any entry (with or without a leading `/`). |
+| `staleThreshold` | Days since last update before the warning appears.                                                               |
+| `forceShow`      | Optional. When `true`, always shows the callout (useful for layout testing).                                     |
+
+
+---
+
+
 # Quartz Community Plugin Template
 
 Production-ready template for building, testing, and publishing Quartz community plugins. It mirrors
