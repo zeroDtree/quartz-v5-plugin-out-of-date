@@ -1,7 +1,7 @@
 {
-  "name": "@quartz-community/plugin-template",
+  "name": "@quartz-community/out-of-date",
   "version": "0.1.0",
-  "description": "Template repository for Quartz community plugins.",
+  "description": "Shows a warning callout when content in selected folders is stale.",
   "type": "module",
   "license": "MIT",
   "author": "Quartz Community",
@@ -13,11 +13,8 @@
   "keywords": [
     "quartz",
     "quartz-plugin",
-    "plugin-template",
-    "remark",
-    "rehype",
-    "mdast",
-    "hast"
+    "out-of-date",
+    "stale-content"
   ],
   "files": [
     "dist",
@@ -85,7 +82,6 @@
     "remark-gfm": "^4.0.1",
     "remark-parse": "^11.0.0",
     "remark-stringify": "^11.0.0",
-    "sass": "^1.97.3",
     "tsup": "^8.5.0",
     "typescript": "^5.9.3",
     "unified": "^11.0.5",
@@ -94,30 +90,29 @@
     "vitest": "^2.1.9"
   },
   "quartz": {
-    "name": "plugin-template",
-    "displayName": "Plugin Template",
-    "category": "transformer",
+    "name": "out-of-date",
+    "displayName": "Out of Date Warning",
+    "category": [
+      "transformer",
+      "component"
+    ],
     "version": "1.0.0",
     "quartzVersion": ">=5.0.0",
     "dependencies": [],
-    "defaultOrder": 50,
+    "defaultOrder": 15,
     "defaultEnabled": true,
-    "defaultOptions": {},
-    "optionSchema": {
-      "highlightToken": {
-        "type": "enum",
-        "values": [
-          "==",
-          "**",
-          "~~"
-        ]
-      }
+    "defaultOptions": {
+      "checkPaths": [
+        "/01-courses/",
+        "/03-tools/"
+      ],
+      "staleThreshold": 60
     },
     "components": {
-      "ExampleComponent": {
-        "displayName": "Example Component",
-        "defaultPosition": "right",
-        "defaultPriority": 50
+      "OutOfDate": {
+        "displayName": "Out of Date",
+        "defaultPosition": "beforeBody",
+        "defaultPriority": 15
       }
     }
   },

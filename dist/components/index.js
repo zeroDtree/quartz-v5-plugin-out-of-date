@@ -7,11 +7,36 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-// src/components/styles/example.scss
-var example_default = ".example-component {\n  padding: 8px 16px;\n  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);\n  color: white;\n  border-radius: 4px;\n  font-weight: 600;\n  display: inline-block;\n}";
+// src/i18n/locales/en-US.ts
+var en_US_default = {
+  components: {
+    outOfDate: {
+      title: "Warning",
+      staleMessage: ({ diffDays }) => `This page was last updated over ${diffDays} days ago. Content may be outdated.`,
+      forceShowMessage: "[Test] This page may be outdated. Please verify the information is still current."
+    }
+  }
+};
 
-// src/components/scripts/example.inline.ts
-var example_inline_default = 'function l(){let e=window.location.pathname;return e.startsWith("/")&&(e=e.slice(1)),e.endsWith("/")&&(e=e.slice(0,-1)),e||"index"}function r(){let e=document.querySelectorAll(".example-component");if(e.length===0)return;let t=[];function o(n){(n.ctrlKey||n.metaKey)&&n.shiftKey&&n.key.toLowerCase()==="e"&&(n.preventDefault(),console.log("[ExampleComponent] Keyboard shortcut triggered!"))}document.addEventListener("keydown",o),t.push(()=>document.removeEventListener("keydown",o));for(let n of e){let i=()=>{console.log("[ExampleComponent] Clicked!")};n.addEventListener("click",i),t.push(()=>n.removeEventListener("click",i))}typeof window<"u"&&window.addCleanup&&window.addCleanup(()=>{t.forEach(n=>n())}),console.log("[ExampleComponent] Initialized with",e.length,"component(s)")}document.addEventListener("nav",e=>{let t=e.detail?.url||l();console.log("[ExampleComponent] Navigation to:",t),r()});document.addEventListener("render",()=>{console.log("[ExampleComponent] Render event - re-initializing"),r()});document.addEventListener("prenav",()=>{let e=document.querySelector(".example-component");e&&sessionStorage.setItem("exampleScrollTop",e.scrollTop?.toString()||"0")});\n';
+// src/i18n/locales/zh-CN.ts
+var zh_CN_default = {
+  components: {
+    outOfDate: {
+      title: "\u8B66\u544A",
+      staleMessage: ({ diffDays }) => `\u672C\u6587\u6700\u540E\u66F4\u65B0\u5DF2\u8D85\u8FC7 ${diffDays} \u5929\u3002\u5185\u5BB9\u53EF\u80FD\u5DF2\u7ECF\u8FC7\u65F6\uFF0C\u8BF7\u6CE8\u610F\u53C2\u8003\u65F6\u6548\u6027\u3002`,
+      forceShowMessage: "\u3010\u6D4B\u8BD5\u3011\u672C\u6587\u6700\u540E\u66F4\u65B0\u53EF\u80FD\u5DF2\u8FC7\u65F6\uFF0C\u8BF7\u6CE8\u610F\u53C2\u8003\u65F6\u6548\u6027\u3002"
+    }
+  }
+};
+
+// src/i18n/index.ts
+var locales = {
+  "en-US": en_US_default,
+  "zh-CN": zh_CN_default
+};
+function i18n(locale) {
+  return locales[locale] || en_US_default;
+}
 var l;
 l = { __e: function(n2, l2, u3, t2) {
   for (var i2, o2, r2; l2 = l2.__; ) if ((i2 = l2.__c) && !i2.__) try {
@@ -29,23 +54,55 @@ function u2(e2, t2, n2, o2, i2, u3) {
   var a2, c2, p2 = t2;
   if ("ref" in p2) for (c2 in p2 = {}, t2) "ref" == c2 ? a2 = t2[c2] : p2[c2] = t2[c2];
   var l2 = { type: e2, props: p2, key: n2, ref: a2, __k: null, __: null, __b: 0, __e: null, __c: null, constructor: void 0, __v: --f2, __i: -1, __u: 0, __source: i2, __self: u3 };
+  if ("function" == typeof e2 && (a2 = e2.defaultProps)) for (c2 in a2) void 0 === p2[c2] && (p2[c2] = a2[c2]);
   return l.vnode && l.vnode(l2), l2;
 }
 
-// src/components/ExampleComponent.tsx
-var ExampleComponent_default = ((opts) => {
-  const { prefix = "", suffix = "", className = "example-component" } = opts ?? {};
-  const Component = (props) => {
-    const frontmatter = props.fileData?.frontmatter;
-    const title = frontmatter?.title ?? "Untitled";
-    const fullText = `${prefix}${title}${suffix}`;
-    return /* @__PURE__ */ u2("div", { class: classNames(className), children: fullText });
+// src/components/OutOfDate.tsx
+function OutOfDateWarning({
+  displayClass,
+  title,
+  message
+}) {
+  return /* @__PURE__ */ u2("div", { class: classNames(displayClass, "callout"), "data-callout": "warning", children: [
+    /* @__PURE__ */ u2("div", { class: "callout-title", children: [
+      /* @__PURE__ */ u2("div", { class: "callout-icon" }),
+      /* @__PURE__ */ u2("div", { class: "callout-title-inner", children: title })
+    ] }),
+    /* @__PURE__ */ u2("div", { class: "callout-content", children: /* @__PURE__ */ u2("p", { children: message }) })
+  ] });
+}
+var OutOfDate_default = ((userOpts) => {
+  const config = userOpts ?? {};
+  const OutOfDate = ({ fileData, displayClass, cfg }) => {
+    const locale = cfg.locale ?? "en-US";
+    const t2 = i18n(locale).components.outOfDate;
+    if (config.forceShow) {
+      return /* @__PURE__ */ u2(
+        OutOfDateWarning,
+        {
+          displayClass,
+          title: t2.title,
+          message: t2.forceShowMessage
+        }
+      );
+    }
+    const staleInfo = fileData.outOfDate;
+    if (!staleInfo?.show || staleInfo.diffDays == null) {
+      return null;
+    }
+    return /* @__PURE__ */ u2(
+      OutOfDateWarning,
+      {
+        displayClass,
+        title: t2.title,
+        message: t2.staleMessage({ diffDays: staleInfo.diffDays })
+      }
+    );
   };
-  Component.css = example_default;
-  Component.afterDOMLoaded = example_inline_default;
-  return Component;
+  return OutOfDate;
 });
 
-export { ExampleComponent_default as ExampleComponent };
+export { OutOfDate_default as OutOfDate };
 //# sourceMappingURL=index.js.map
 //# sourceMappingURL=index.js.map
