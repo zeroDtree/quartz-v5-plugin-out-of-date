@@ -1,4 +1,3 @@
-
 ## Quick start
 
 Show a warning callout on pages in selected folders when they have not been updated within a threshold (in days).
@@ -52,9 +51,7 @@ plugins:
 | `staleThreshold` | Days since last update before the warning appears.                                                               |
 | `forceShow`      | Optional. When `true`, always shows the callout (useful for layout testing).                                     |
 
-
 ---
-
 
 # Quartz Community Plugin Template
 
