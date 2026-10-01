@@ -28,11 +28,11 @@ plugins:
 
 ## Options
 
-| Option | Default | Meaning |
-| --- | --- | --- |
-| `checkPaths` | `/计算机/`, `/机器学习/` | Path fragments. A page matches if its path contains any entry. |
-| `staleThreshold` | `45` | Days since the last update before the warning appears |
-| `forceShow` | unset | When `true`, always show the callout (layout testing) |
+| Option           | Default                  | Meaning                                                        |
+| ---------------- | ------------------------ | -------------------------------------------------------------- |
+| `checkPaths`     | `/计算机/`, `/机器学习/` | Path fragments. A page matches if its path contains any entry. |
+| `staleThreshold` | `45`                     | Days since the last update before the warning appears          |
+| `forceShow`      | unset                    | When `true`, always show the callout (layout testing)          |
 
 ## Development
 
